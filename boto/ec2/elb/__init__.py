@@ -139,9 +139,9 @@ class ELBConnection(AWSQueryConnection):
                           Protocol, [SSLCertificateId])
                           where LoadBalancerPortNumber and InstancePortNumber
                           are integer values between 1 and 65535, Protocol is a
-                          string containing either 'TCP', 'HTTP' or 'HTTPS';
+                          string containing 'TCP', 'HTTP', 'HTTPS', or 'SSL';
                           SSLCertificateID is the ARN of a AWS AIM certificate,
-                          and must be specified when doing HTTPS.
+                          and must be specified when doing HTTPS or SSL.
 
         :rtype: :class:`boto.ec2.elb.loadbalancer.LoadBalancer`
         :return: The newly created :class:`boto.ec2.elb.loadbalancer.LoadBalancer`
@@ -149,11 +149,22 @@ class ELBConnection(AWSQueryConnection):
         params = {'LoadBalancerName' : name}
         for index, listener in enumerate(listeners):
             i = index + 1
+
             params['Listeners.member.%d.LoadBalancerPort' % i] = listener[0]
             params['Listeners.member.%d.InstancePort' % i] = listener[1]
-            params['Listeners.member.%d.Protocol' % i] = listener[2]
-            if listener[2]=='HTTPS':
+
+            elb_protocol = listener[2]
+            if '-' in listener[2]:
+                (elb_protocol, instance_protocol) = listener[2].split('-')
+                params['Listeners.member.%d.Protocol' % i] = elb_protocol
+                params['Listeners.member.%d.InstanceProtocol' % i] = instance_protocol
+
+            else:
+                params['Listeners.member.%d.Protocol' % i] = listener[2]
+
+            if elb_protocol == 'HTTPS' or elb_protocol == 'SSL':
                 params['Listeners.member.%d.SSLCertificateId' % i] = listener[3]
+
         self.build_list_params(params, zones, 'AvailabilityZones.member.%d')
         load_balancer = self.get_object('CreateLoadBalancer',
                                         params, LoadBalancer)
