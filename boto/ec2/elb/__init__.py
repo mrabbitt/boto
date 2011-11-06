@@ -71,7 +71,7 @@ def connect_to_region(region_name, **kw_params):
 
 class ELBConnection(AWSQueryConnection):
 
-    APIVersion = boto.config.get('Boto', 'elb_version', '2011-04-05')
+    APIVersion = boto.config.get('Boto', 'elb_version', '2011-08-15')
     DefaultRegionName = boto.config.get('Boto', 'elb_region_name', 'us-east-1')
     DefaultRegionEndpoint = boto.config.get('Boto', 'elb_region_endpoint',
                                             'elasticloadbalancing.amazonaws.com')
