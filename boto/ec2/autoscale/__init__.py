@@ -42,6 +42,7 @@ from boto.ec2.autoscale.scheduled import ScheduledUpdateGroupAction
 RegionData = {
     'us-east-1' : 'autoscaling.us-east-1.amazonaws.com',
     'us-west-1' : 'autoscaling.us-west-1.amazonaws.com',
+    'us-west-2' : 'autoscaling.us-west-2.amazonaws.com',
     'eu-west-1' : 'autoscaling.eu-west-1.amazonaws.com',
     'ap-northeast-1' : 'autoscaling.ap-northeast-1.amazonaws.com',
     'ap-southeast-1' : 'autoscaling.ap-southeast-1.amazonaws.com'}
@@ -86,7 +87,7 @@ class AutoScaleConnection(AWSQueryConnection):
 
     def __init__(self, aws_access_key_id=None, aws_secret_access_key=None,
                  is_secure=True, port=None, proxy=None, proxy_port=None,
-                 proxy_user=None, proxy_pass=None, debug=None,
+                 proxy_user=None, proxy_pass=None, debug=0,
                  https_connection_factory=None, region=None, path='/'):
         """
         Init method to create a new connection to the AutoScaling service.
